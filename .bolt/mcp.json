@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "linear": {
+      "enabled": true
+    },
+    "notion": {
+      "enabled": true
+    },
+    "sentry": {
+      "enabled": true
+    },
+    "shaders": {
+      "enabled": true
+    }
+  }
+}

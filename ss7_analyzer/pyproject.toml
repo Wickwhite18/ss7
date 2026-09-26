@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "ss7-analyzer"
+version = "1.0.0"
+description = "Enterprise-grade SS7/SIGTRAN forensic analysis and threat intelligence CLI"
+readme = "docs/README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [{name = "SS7 Security Team"}]
+keywords = ["ss7", "sigtran", "telecom", "security", "pcap", "wireshark", "tshark", "forensics"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security",
+    "Topic :: System :: Networking :: Monitoring",
+]
+
+dependencies = [
+    "rich>=13.7.0",
+    "pydantic>=2.5.0",
+    "pyyaml>=6.0.1",
+    "structlog>=24.1.0",
+    "jsonschema>=4.20.0",
+]
+
+[project.optional-dependencies]
+geoip = ["geoip2>=4.8.0"]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-subprocess>=1.5.0",
+    "ruff>=0.1.0",
+    "mypy>=1.8.0",
+    "types-PyYAML",
+]
+
+[project.scripts]
+ss7-analyzer = "ss7_analyzer.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short"
+
+[tool.coverage.run]
+source = ["src/ss7_analyzer"]
+omit = ["tests/*", "*/__init__.py"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_def = true
+ignore_missing_imports = true

@@ -1,0 +1,83 @@
+# SS7 Analyzer Configuration
+# --------------------------
+# This file controls trusted network parameters, detection thresholds,
+# and integration settings. Override any value with environment variables
+# prefixed with SS7_ (e.g., SS7_MAX_PCAP_SIZE_MB=500).
+
+# --- General ---
+max_pcap_size_mb: 500
+tshark_timeout_sec: 60
+tshark_max_retries: 3
+tshark_binary: "tshark"
+
+# --- Trusted Sources ---
+# SCTP ports and CIDR ranges considered legitimate signaling gateways.
+trusted_ports: [2905, 2906]
+trusted_cidrs:
+  - "10.0.0.0/8"
+  - "192.168.0.0/16"
+  - "172.16.0.0/12"
+
+# --- Expected GT Country Codes ---
+# Country codes that legitimate roaming partners operate from.
+expected_gt_country_codes:
+  - "1"    # NANP (US/Canada)
+  - "44"   # UK
+  - "49"   # Germany
+  - "33"   # France
+  - "39"   # Italy
+  - "34"   # Spain
+  - "31"   # Netherlands
+  - "351"  # Portugal
+  - "352"  # Luxembourg
+  - "353"  # Ireland
+
+# --- Risk Scoring Weights ---
+risk_weights:
+  operation_severity: 0.4
+  source_trust: 0.3
+  behavior_anomaly: 0.2
+  temporal_anomaly: 0.1
+
+# --- Alert Thresholds ---
+alert_thresholds:
+  critical: 0.85
+  high: 0.70
+  medium: 0.50
+
+# --- Detection Thresholds ---
+detection:
+  burst_zscore: 3.0
+  burst_queries_per_sec: 100
+  orphan_timeout_sec: 10
+  latency_threshold_sec: 5.0
+  zero_latency_ms: 1.0
+  gt_frequency_high: 100
+  gt_frequency_moderate: 50
+  gt_frequency_window_hours: 1
+
+# --- Op Code Severity Mapping ---
+op_code_severity:
+  3: 1.0    # Provide Subscriber Info (PSI) — critical
+  22: 0.8   # Send Routing Info (SRI) — high
+  45: 0.8   # Send Routing Info for SM — high
+  2: 0.5    # Update Location — medium
+  default: 0.3
+
+# --- GeoIP ---
+geoip:
+  enabled: false
+  database_path: ""
+  # Set enabled: true and database_path to a MaxMind GeoLite2-Country.mmdb
+  # Download via: scripts/install_geoip.sh
+
+# --- State Management ---
+state:
+  sqlite_path: "ss7_analyzer_state.db"
+  cache_size: 100
+
+# --- Logging ---
+logging:
+  level: "INFO"
+  format: "json"  # "json" or "console"
+  correlation_id_header: "correlation_id"

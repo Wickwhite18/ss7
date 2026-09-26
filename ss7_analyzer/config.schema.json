@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SS7 Analyzer Configuration",
+  "type": "object",
+  "required": ["max_pcap_size_mb", "tshark_timeout_sec", "trusted_ports", "risk_weights", "alert_thresholds", "detection", "op_code_severity"],
+  "properties": {
+    "max_pcap_size_mb": {"type": "integer", "minimum": 1, "maximum": 10000},
+    "tshark_timeout_sec": {"type": "integer", "minimum": 5, "maximum": 600},
+    "tshark_max_retries": {"type": "integer", "minimum": 1, "maximum": 10},
+    "tshark_binary": {"type": "string"},
+    "trusted_ports": {
+      "type": "array",
+      "items": {"type": "integer", "minimum": 1, "maximum": 65535}
+    },
+    "trusted_cidrs": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "expected_gt_country_codes": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "risk_weights": {
+      "type": "object",
+      "required": ["operation_severity", "source_trust", "behavior_anomaly", "temporal_anomaly"],
+      "properties": {
+        "operation_severity": {"type": "number", "minimum": 0, "maximum": 1},
+        "source_trust": {"type": "number", "minimum": 0, "maximum": 1},
+        "behavior_anomaly": {"type": "number", "minimum": 0, "maximum": 1},
+        "temporal_anomaly": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "alert_thresholds": {
+      "type": "object",
+      "required": ["critical", "high", "medium"],
+      "properties": {
+        "critical": {"type": "number", "minimum": 0, "maximum": 1},
+        "high": {"type": "number", "minimum": 0, "maximum": 1},
+        "medium": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "detection": {
+      "type": "object",
+      "required": ["burst_zscore", "burst_queries_per_sec", "orphan_timeout_sec", "latency_threshold_sec"],
+      "properties": {
+        "burst_zscore": {"type": "number", "minimum": 0},
+        "burst_queries_per_sec": {"type": "number", "minimum": 0},
+        "orphan_timeout_sec": {"type": "integer", "minimum": 1},
+        "latency_threshold_sec": {"type": "number", "minimum": 0},
+        "zero_latency_ms": {"type": "number", "minimum": 0},
+        "gt_frequency_high": {"type": "integer", "minimum": 0},
+        "gt_frequency_moderate": {"type": "integer", "minimum": 0},
+        "gt_frequency_window_hours": {"type": "number", "minimum": 0}
+      }
+    },
+    "op_code_severity": {
+      "type": "object",
+      "additionalProperties": {"type": "number", "minimum": 0, "maximum": 1}
+    },
+    "geoip": {
+      "type": "object",
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "database_path": {"type": "string"}
+      }
+    },
+    "state": {
+      "type": "object",
+      "properties": {
+        "sqlite_path": {"type": "string"},
+        "cache_size": {"type": "integer", "minimum": 1, "maximum": 10000}
+      }
+    },
+    "logging": {
+      "type": "object",
+      "properties": {
+        "level": {"type": "string", "enum": ["DEBUG", "INFO", "WARNING", "ERROR"]},
+        "format": {"type": "string", "enum": ["json", "console"]},
+        "correlation_id_header": {"type": "string"}
+      }
+    }
+  }
+}
